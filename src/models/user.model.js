@@ -15,7 +15,7 @@ async function createRoleType() {
     }
 }
 
-async function userTable() {
+async function createUserTable() {
     try {
         await createRoleType()
         await pool.query(`create table if not exists users (
@@ -33,4 +33,4 @@ async function userTable() {
     }
 }
 
-module.exports=userTable
+module.exports = createUserTable
