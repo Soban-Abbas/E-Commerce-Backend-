@@ -9,7 +9,7 @@ async function createInventoryTable() {
         await pool.query(`
            
 
-CREATE TABLE inventory(
+CREATE TABLE if not exists inventory(
     id SERIAL PRIMARY KEY,
     product_id INT UNIQUE REFERENCES products(id) ON DELETE CASCADE,
     quantity INT NOT NULL DEFAULT 0 CHECK(quantity >= 0),
