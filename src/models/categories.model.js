@@ -12,7 +12,7 @@ async function createCategoriesTable() {
 );
             `)
     } catch (error) {
-        console.log(error)
+        throw error
     }
 }
 

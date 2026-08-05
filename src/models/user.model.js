@@ -29,7 +29,7 @@ async function createUserTable() {
 
             )`)
     } catch (error) {
-        console.log(error)
+        throw error
     }
 }
 
