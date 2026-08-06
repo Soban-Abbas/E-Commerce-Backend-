@@ -12,7 +12,7 @@ const orders=require("../migration/010_create_orders");
 const order_items=require('../migration/011_create_order_items')
 const reviews=require('../migration/012_create_reviews');
 const payments=require("../migration/013_create_payments")
-
+const token=require("../migration/014_create_token")
 async function createMigration(pool){
     try {
         console.log("helo")
@@ -81,6 +81,10 @@ const migrations=[{
         name: '0013_create_payments',
         migration: payments
     },
+    {
+        name: '0014_create_token',
+        migration: token
+    }
 
 ]
 
