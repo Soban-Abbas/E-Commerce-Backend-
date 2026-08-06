@@ -1,4 +1,4 @@
-
+require('dotenv').config()
 const envVariables = ['hostname', 'database', 'password', 'port', 'user', 'jwtSecretKey', 'adminEmail', 'adminPassword'];
 
 const errors = []
@@ -16,7 +16,7 @@ function validateEnv() {
             process.exit(1);
         }
 
-        console.log("Env Variables enjected Successfully")
+        console.log(`Env Variables ${v} enjected Successfully`)
     }
 
 
