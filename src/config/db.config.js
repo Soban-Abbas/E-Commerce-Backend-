@@ -1,5 +1,5 @@
 require('dotenv').config()
-const envVariables = ['hostname', 'database', 'password', 'port', 'user', 'jwtSecretKey', 'adminEmail', 'adminPassword'];
+const envVariables = ['hostname', 'database', 'password', 'port', 'user', 'jwtSecretKey','adminName', 'adminEmail', 'adminPassword'];
 
 const errors = []
 function validateEnv() {
@@ -31,6 +31,7 @@ module.exports = {
     database: process.env.database,
     port: process.env.port,
     jwtSecretKey: process.env.jwtSecretKey,
+    adminName:process.env.adminName,
     adminEmail: process.env.adminEmail,
     adminPassword: process.env.adminPassword,
     pool: {
