@@ -4,6 +4,6 @@ const bodyParser = require('body-parser')
 const router=express.Router();
 const jsonParser = bodyParser.json()
 
-router.post('/reset-password',jsonParser, authController.resetPassword)
-
+router.post('/forget-password',jsonParser, authController.forgetPassword)
+router.post('/reset-password/:token', jsonParser,authController. resetPassword)
 module.exports=router
