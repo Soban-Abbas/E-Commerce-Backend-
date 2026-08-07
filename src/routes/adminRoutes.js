@@ -1,8 +1,9 @@
 const express = require("express");
-const adminController=require('../controllers/adminController')
+const authController=require('../controllers/authController')
+const bodyParser = require('body-parser')
 const router=express.Router();
+const jsonParser = bodyParser.json()
 
-
-router.post('/reset-password',adminController.resetPassword)
+router.post('/reset-password',jsonParser, authController.resetPassword)
 
 module.exports=router

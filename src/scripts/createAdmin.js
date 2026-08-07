@@ -16,7 +16,7 @@ if(admin.rowCount>0){
 console.log(envVariables.adminName,envVariables.adminEmail,envVariables.adminPassword)
 
     const password = await encryptedPassword(envVariables.adminPassword)
-    const createAdmin=await pool.query('insert into users (name , email , password) values($1,$2,$3) ',[envVariables.adminName,envVariables.adminEmail,password]);
+    const createAdmin=await pool.query('insert into users (name , email , password, role) values($1,$2,$3,$4) ',[envVariables.adminName,envVariables.adminEmail,password,'admin']);
 
 
     console.log("admin created Successfully")
