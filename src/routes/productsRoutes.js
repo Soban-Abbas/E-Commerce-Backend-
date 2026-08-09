@@ -5,6 +5,6 @@ const router=express.Router()
 const jsonParser = bodyParser.json()
 
 router.post("/products",jsonParser,productsController.uploadNewProducts)
-
+router.get('/products',productsController.getProducts)
 
 module.exports=router;

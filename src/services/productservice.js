@@ -33,3 +33,24 @@ exports.addNewProduct = async (product) => {
         client.release()
     }
 }
+exports.getProducts=async(page,limit , is_active)=>{
+try {
+    const offset=(page-1)*limit;
+    const products=await productModel.getProducts(limit,offset,is_active);
+    return updateProductInfo=products.map(p=>{
+        return{
+        id:    p.id,
+        category:p.category,
+        name:p.name,
+        description:p.description,
+        sku:p.sku,
+        image_url:p.image_url,
+        price:p.price,
+        quantity:p.quantity,
+        is_active:p.is_active
+        }
+    })
+} catch (error) {
+    throw error
+}
+}

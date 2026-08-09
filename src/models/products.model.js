@@ -1,4 +1,4 @@
-
+const {pool}=require("../config/pool")
 exports.productExists=async (name , client) => {
     try {
         const product = await client.query(`select * from products where name = $1`,[name])
@@ -22,6 +22,34 @@ exports.createnewProduct=async(product, client)=>{
         }else{
             const error = new Error("failed to add new Product");
             throw error;
+            return
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.getProducts=async(limit , offset , is_active)=>{
+    try {
+        const products = await pool.query(`select categories.name as category,products.* , inventory.quantity   from products 
+        inner join product_categories 
+        on products.id = product_categories.product_id 
+        inner join categories
+        on categories.id = product_categories.category_id
+        inner join inventory
+        on products.id = inventory.product_id
+        
+        
+where is_active = $3
+        limit $1 offset $2
+
+        `,[limit,offset,is_active]);
+        if(products.rowCount>0){
+            return products.rows
+        }else{
+            const error = new Error("no product found");
+            error.status=404;
+            throw error
             return
         }
     } catch (error) {
