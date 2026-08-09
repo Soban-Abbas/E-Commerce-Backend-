@@ -56,3 +56,22 @@ where is_active = $3
         throw error
     }
 }
+
+exports.updateProduct=async(fields , values ,sku)=>{
+    try {
+        values.push(sku);
+        console.log(fields);
+        console.log(values);
+        
+        const updateProduct=await pool.query(`update products set ${fields.join(', ')} where sku=$${values.length} returning * `,values);
+    
+        if(updateProduct.rowCount>0){
+            return updateProduct.rows[0]
+        }else{
+            throw new Error("failed to Update Product");
+            return
+        }
+    } catch (error) {
+        throw error
+    }
+}

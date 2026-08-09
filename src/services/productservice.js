@@ -33,7 +33,7 @@ exports.addNewProduct = async (product) => {
         client.release()
     }
 }
-exports.getProducts=async(page,limit , is_active)=>{
+exports.getProducts=async(page,limit,is_active)=>{
 try {
     const offset=(page-1)*limit;
     const products=await productModel.getProducts(limit,offset,is_active);
@@ -50,6 +50,46 @@ try {
         is_active:p.is_active
         }
     })
+} catch (error) {
+    throw error
+}
+}
+exports.updateProduct=async(sku,price,quantity,is_active)=>{
+try {
+
+    if(!sku){
+        const error = new Error("product Not found")
+        error.status=404;
+        throw error
+    }
+   
+
+    const productsFields=[];
+    const productsValues=[];
+
+    if(price){
+        productsFields.push(`price = $${productsValues.length+1}`);
+        productsValues.push(price)
+    }
+
+        productsFields.push(`is_active = $${productsValues.length+1}`);
+        productsValues.push(is_active)
+
+    let updateProduct
+    if(productsFields.length>0){
+        console.log("hello")
+        updateProduct = await productModel.updateProduct(productsFields, productsValues,sku)
+
+    }
+    console.log(updateProduct)
+if(typeof quantity==="number"){
+        const updateQuantity = await inventoryService.updateInventory(quantity, updateProduct.id)
+}
+        
+    
+
+    return "product Updated Successfully"
+   
 } catch (error) {
     throw error
 }
