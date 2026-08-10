@@ -16,10 +16,11 @@ const token = require("../migration/014_create_token")
 const alterCategories = require("../migration/015_alter_categories");
 const setUniqueName = require("../migration/016_alter_categories")
 const setUniqueProductName=require("../migration/017_unique_product_name");
-const drop_parent_category_id=require("../migration/018_delete_parent_category")
+const drop_parent_category_id=require("../migration/018_delete_parent_category");
+const drop_price_from_cart_items=require("../migration/019_dropPriceFromcartItems")
 async function createMigration(pool) {
     try {
-        console.log("helo")
+        
         await pool.query(`create table if not exists migration (
              id serial primary key,
             name character varying(200) unique   not null ,
@@ -104,6 +105,10 @@ const migrations = [{
     {
         name: "0018_drop_parent_category_id",
         migration: drop_parent_category_id
+    },
+    {
+        name: "0019_drop_price_from_cart_items",
+        migration: drop_price_from_cart_items
     }
 ]
 
