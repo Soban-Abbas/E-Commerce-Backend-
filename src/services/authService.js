@@ -2,7 +2,8 @@ const crypto = require("crypto")
 const userModel = require("../models/user.model")
 const { sendEmail } = require("../util/sendEmail")
 const tokenModel = require("../models/token.model")
-const encryptedPassword = require('../util/encryptPassword')
+const { password } = require("../config/db.config")
+const encryptPassword = require("../util/encryptPassword")
 exports.forgetPassword = async (email) => {
     try {
         const user = await userModel.getUserByEmail(email)
@@ -28,6 +29,16 @@ exports.resetPassword = async (token, password) => {
 
 
 
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.signup=async(name,email,password,role)=>{
+    try {
+        const encryptedPassword=await encryptPassword(password);
+        const registerNewUser=await userModel.registerNewUser(name,email,encryptedPassword,role);
+        return "Registartion Successfull ! Please Login "
     } catch (error) {
         throw error
     }

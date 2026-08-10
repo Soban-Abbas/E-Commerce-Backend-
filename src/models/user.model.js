@@ -1,3 +1,5 @@
+const e = require("express");
+const { password } = require("../config/db.config");
 const {pool}=require("../config/pool");
 exports.getUserByEmail=async(email)=>{
     try {
@@ -28,4 +30,19 @@ exports.resetpassword=async (user_id , password) => {
         throw error
     }
 }
-
+exports.registerNewUser=async(name,email,password,role)=>{
+    try {
+        const addNewuser=await pool.query(`insert into users (name,email,password,role) values($1,$2,$3,$4) returning *`,[name,email,password,role]);
+        if(addNewuser.rowCount>0){
+            return true
+        }else{
+            throw new Error("Error in Signup")
+        }
+    } catch (error) {
+        if(error.code="23505"){
+            error.status=409
+            error.message="Email Already Registered"
+        }
+        throw error
+    }
+}
