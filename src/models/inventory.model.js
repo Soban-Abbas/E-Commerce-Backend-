@@ -22,3 +22,16 @@ return true
     throw error
 }
 }
+exports.deleteQuantity=async(product_id,client)=>{
+    try {
+        const deleteQuantity=await client.query('delete from inventory where product_id=$1 returning *',[product_id]);
+
+        if(deleteQuantity.rowCount>0){
+            return true
+        }else{
+            throw new Error("Product Not Deleted")
+        }
+    } catch (error) {
+        throw error
+    }
+}

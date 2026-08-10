@@ -16,7 +16,7 @@ exports.productExists=async (name , client) => {
 
 exports.createnewProduct=async(product, client)=>{
     try {
-        const addedProduct=await client.query('insert into products (name , description,price,sku, image_url,is_active ) values ($1,$2,$3,$4,$5,$6) returning * ',[product.Name,product.description, product.price , product.sku, product.img_url,product.active]);
+        const addedProduct=await client.query('insert into products (name , description,price,sku, image_url,is_active ) values ($1,$2,$3,$4,$5,$6) returning * ',[product.Name,product.description, product.price , product.sku, product.imageUrl,product.is_active]);
         if(addedProduct.rowCount>0){
             return addedProduct.rows[0]
         }else{
@@ -31,6 +31,7 @@ exports.createnewProduct=async(product, client)=>{
 
 exports.getProducts=async(limit , offset , is_active)=>{
     try {
+     console.log(limit,offset,is_active);
         const products = await pool.query(`select categories.name as category,products.* , inventory.quantity   from products 
         inner join product_categories 
         on products.id = product_categories.product_id 
@@ -40,7 +41,7 @@ exports.getProducts=async(limit , offset , is_active)=>{
         on products.id = inventory.product_id
         
         
-where is_active = $3
+where products.is_active = $3
         limit $1 offset $2
 
         `,[limit,offset,is_active]);
@@ -71,6 +72,22 @@ exports.updateProduct=async(fields , values ,sku)=>{
             throw new Error("failed to Update Product");
             return
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.deleteProduct=async(sku,client)=>{
+    try {
+        const deleteProduct = await client.query('delete from products where sku=$1 returning *',[sku]);;
+        if(deleteProduct.rowCount>0){
+            return deleteProduct.rows[0].id
+        }else{
+            
+            throw new Error("cannot delete product");
+return
+        }
+        
     } catch (error) {
         throw error
     }

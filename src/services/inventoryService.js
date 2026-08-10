@@ -15,3 +15,13 @@ exports.updateInventory=async(quantity,id)=>{
         throw error
     }
 }
+exports.deleteQuantity=async(product_id,client)=>{
+try {
+    const deleteQuantity=await inventroyModel.deleteQuantity(product_id,client);
+    return true
+
+
+} catch (error) {
+    throw error
+}
+}

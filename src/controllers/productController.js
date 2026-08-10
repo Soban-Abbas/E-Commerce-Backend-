@@ -1,6 +1,15 @@
-const productService=require("../services/productservice")
+const productService=require("../services/productservice");
+const {validationResult}=require("express-validator");
+
 exports.uploadNewProducts=async(req , res , next)=>{
     try {
+
+        const error = validationResult(req);
+        if(!error.isEmpty()){
+            return res.status(422).json({
+                error:error.array()
+            })
+        }
         const productDetails= req.body
     
         const addProduct=await productService.addNewProduct(productDetails);
@@ -13,15 +22,15 @@ exports.uploadNewProducts=async(req , res , next)=>{
 }
 exports.getProducts=async(req , res , next)=>{
     try {
-        const page=Number(req.query.page) || 1;
-        const items=Number(req.query.items) || 5;
-        let is_active=req.query.is_active || true;
+        const page=Number(req.query?.page??1) 
+        const limit=Number(req.query?.items??5)
+        let is_active=req.query?.is_active??true
         if(is_active==="true"){
             is_active=true
-        }else{
+        }if(is_active==="false"){
             is_active=false
         }
-        const product=await productService.getProducts(page,items,is_active);
+        const product=await productService.getProducts(page,limit,is_active);
         res.status(200).json({
             message:"Product fetch Sucessfully",
             product
@@ -38,6 +47,18 @@ exports.updateProduct=async(req , res , next)=>{
         const updateProduct=await productService.updateProduct(sku,price,quantity,is_active) ;
         res.status(200).json({
             message:updateProduct
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+exports.deleteProduct=async(req ,res , next)=>{
+    try {
+        const sku=req.params.sku;
+        
+        const deleteProduct=await productService.deleteProduct(sku);
+        res.status(200).json({
+            message:deleteProduct
         })
     } catch (error) {
         next(error)

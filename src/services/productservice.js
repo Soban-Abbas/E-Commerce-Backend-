@@ -8,10 +8,12 @@ exports.addNewProduct = async (product) => {
         await client.query('begin')
         const Name = product.name.trim().toUpperCase();
         const Category = product.category.trim().toUpperCase();
-        const { description, price, quantity, img_url, active } = product;
+        
+        
+        const { description, price, quantity, imageUrl, is_active } = product;
         const sku = `${Name.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(7, 13)}`
         const productInfo = {
-            Name, Category, description, sku, price, quantity, img_url, active
+            Name, Category, description, sku, price, quantity, imageUrl, is_active
         }
 
         const productAlreadyExists = await productModel.productExists(productInfo.Name, client);
@@ -37,7 +39,8 @@ exports.getProducts=async(page,limit,is_active)=>{
 try {
     const offset=(page-1)*limit;
     const products=await productModel.getProducts(limit,offset,is_active);
-    return updateProductInfo=products.map(p=>{
+    console.log(products)
+   const updateProductInfo=products.map(p=>{
         return{
         id:    p.id,
         category:p.category,
@@ -50,6 +53,7 @@ try {
         is_active:p.is_active
         }
     })
+    return updateProductInfo
 } catch (error) {
     throw error
 }
@@ -93,4 +97,27 @@ if(typeof quantity==="number"){
 } catch (error) {
     throw error
 }
+}
+exports.deleteProduct=async(sku)=>{
+    const client=await pool.connect();
+    try {
+        await client.query('begin')
+        if(!sku){
+            const error = new Error("product not found");
+            error.status=404
+            throw error;
+            return
+        }
+        const deleteProduct=await productModel.deleteProduct(sku,client) ;
+        console.log(deleteProduct);
+        return
+        const delete_quantity=await inventoryService.deleteQuantity(deleteProduct,client);
+        await client.query("commit")
+        return "product Deleted Successfully";
+    } catch (error) {
+        await client.query("rollback")
+        throw error
+    }finally{
+        client.release()
+    }
 }
