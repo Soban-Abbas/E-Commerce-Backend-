@@ -121,3 +121,11 @@ exports.deleteProduct=async(sku)=>{
         client.release()
     }
 }
+exports.getProductBySku=async(sku)=>{
+    try {
+        const product=await productModel.getProductBySku(sku);
+        return product
+    } catch (error) {
+        throw error
+    }
+}

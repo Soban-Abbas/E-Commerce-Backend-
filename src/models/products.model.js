@@ -1,3 +1,4 @@
+const { errorMonitor } = require("nodemailer/lib/xoauth2");
 const {pool}=require("../config/pool")
 exports.productExists=async (name , client) => {
     try {
@@ -88,6 +89,21 @@ exports.deleteProduct=async(sku,client)=>{
 return
         }
         
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.getProductBySku=async(sku)=>{
+    try {
+        const product=await pool.query("select * from products where sku=$1",[sku]);
+        if(product.rowCount<1){
+            const error=new Error("product not Available");
+            error.status=404;
+            throw error
+        }else{
+            return product.rows
+        }
     } catch (error) {
         throw error
     }
