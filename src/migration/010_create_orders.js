@@ -1,4 +1,3 @@
-
 async function createStatusType(pool) {
     try {
         await pool.query(`
