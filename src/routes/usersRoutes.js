@@ -6,5 +6,6 @@ const userController=require("../controllers/userController")
 
 
 router.get('/products',userController.getProducts)
-router.post('/signup',jsonParser,userController.signup)
+router.post('/signup',jsonParser,userController.signup);
+router.post('/login',jsonParser,userController.login);
 module.exports=router;

@@ -3,14 +3,14 @@ const { password } = require("../config/db.config");
 const {pool}=require("../config/pool");
 exports.getUserByEmail=async(email)=>{
     try {
-        const user=await pool.query('select id, email, role from users where email = $1',[email]);
+        const user=await pool.query('select id,name, email,password, role from users where email = $1',[email]);
 if(user.rowCount>0){
     
     return user.rows
 }else{
     const error = new Error();
-    error.status=404;
-    error.message="User Not Found"
+    error.status=401;
+    error.message="Invalid Email"
     throw error 
 }
     } catch (error) {
@@ -43,6 +43,20 @@ exports.registerNewUser=async(name,email,password,role)=>{
             error.status=409
             error.message="Email Already Registered"
         }
+        throw error
+    }
+}
+exports.login=async(email,password)=>{
+    try {
+        const login = await pool.query(`select * from users where email = $1 and password =$2`,[email,password]);
+        if(login.rowCount>0){
+            return login.rows[0]
+        }else{
+            const error = new Error("Wrong Email or Password");
+            error.status=401;
+            throw error
+        }
+    } catch (error) {
         throw error
     }
 }

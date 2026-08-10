@@ -4,6 +4,8 @@ const { sendEmail } = require("../util/sendEmail")
 const tokenModel = require("../models/token.model")
 const { password } = require("../config/db.config")
 const encryptPassword = require("../util/encryptPassword")
+const decryptPassword=require("../util/decryptPassword");
+const { generateJwttoken }=require("../util/generateJwt")
 exports.forgetPassword = async (email) => {
     try {
         const user = await userModel.getUserByEmail(email)
@@ -41,5 +43,22 @@ exports.signup=async(name,email,password,role)=>{
         return "Registartion Successfull ! Please Login "
     } catch (error) {
         throw error
+    }
+}
+
+exports.login=async(email, password)=>{
+    try {
+       
+       const user= await userModel.getUserByEmail(email);
+const comparePassword=await decryptPassword(password,user[0].password);
+ const token = generateJwttoken(user[0].id,user[0].role);
+ return {
+    message:"Login Successfull",
+    name:user[0].name,
+    email:user[0].email,
+    token:token
+ }
+    } catch (error) {
+       throw error 
     }
 }

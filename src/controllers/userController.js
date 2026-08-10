@@ -25,3 +25,14 @@ exports.signup=async(req , res , next)=>{
         next(error)
     }
 }
+exports.login=async(req , res , next)=>{
+    try {
+        const {email, password}=req.body;
+const login=await authService.login(email, password);
+res.status(200).json({
+    ...login
+})
+    } catch (error) {
+        throw error
+    }
+}
