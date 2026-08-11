@@ -1,3 +1,4 @@
+
 const cartService=require("../services/cartService")
 exports.addProductTocart=async(req , res , next)=>{
     try {
@@ -11,5 +12,16 @@ exports.addProductTocart=async(req , res , next)=>{
         })
     } catch (error) {
      next(error)   
+    }
+}
+exports.getCartItems=async(req ,res , next)=>{
+    try {
+        const user_id=req.user.id
+        const getCartItems=await cartService.getCartItems(user_id);
+res.status(200).json({
+  items:  getCartItems
+})
+    } catch (error) {
+        next(error)
     }
 }

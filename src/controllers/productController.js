@@ -43,7 +43,7 @@ exports.updateProduct=async(req , res , next)=>{
     try {
         const sku=req.params.sku || null;
        const{price, quantity, is_active }=req.body;
-       console.log(price,quantity,is_active);
+    
         const updateProduct=await productService.updateProduct(sku,price,quantity,is_active) ;
         res.status(200).json({
             message:updateProduct

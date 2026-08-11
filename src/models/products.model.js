@@ -1,4 +1,3 @@
-const { errorMonitor } = require("nodemailer/lib/xoauth2");
 const {pool}=require("../config/pool")
 exports.productExists=async (name , client) => {
     try {
@@ -112,6 +111,37 @@ exports.getProductBySku=async(sku)=>{
         }else{
             return product.rows
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.getProductsByids=async(product)=>{
+    try {
+    
+        
+            
+         const query =`select products.*,inventory.quantity,categories.name as category from products
+            inner join inventory
+            on products.id=inventory.product_id
+            inner join product_categories
+            on products.id=product_categories.product_id
+             inner join categories
+            on categories.id = product_categories.category_id
+
+             where products.id=ANY($1)`;
+
+             const products=await pool.query(query,[product]);
+             
+        if(products.rowCount>0){
+            return products.rows
+        }else{
+            const error = new Error("No products in cart");
+            error.status=404;
+            throw error
+        }
+
+    
     } catch (error) {
         throw error
     }

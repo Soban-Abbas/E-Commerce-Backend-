@@ -39,7 +39,7 @@ exports.getProducts=async(page,limit,is_active)=>{
 try {
     const offset=(page-1)*limit;
     const products=await productModel.getProducts(limit,offset,is_active);
-    console.log(products)
+    
    const updateProductInfo=products.map(p=>{
         return{
         id:    p.id,
@@ -81,11 +81,11 @@ try {
 
     let updateProduct
     if(productsFields.length>0){
-        console.log("hello")
+    
         updateProduct = await productModel.updateProduct(productsFields, productsValues,sku)
 
     }
-    console.log(updateProduct)
+
 if(typeof quantity==="number"){
         const updateQuantity = await inventoryService.updateInventory(quantity, updateProduct.id)
 }
@@ -109,7 +109,7 @@ exports.deleteProduct=async(sku)=>{
             return
         }
         const deleteProduct=await productModel.deleteProduct(sku,client) ;
-        console.log(deleteProduct);
+        
         return
         const delete_quantity=await inventoryService.deleteQuantity(deleteProduct,client);
         await client.query("commit")
@@ -128,4 +128,14 @@ exports.getProductBySku=async(sku)=>{
     } catch (error) {
         throw error
     }
+}
+exports.getProductsByIds=async(products)=>{
+    try {
+        
+        const product = await productModel.getProductsByids(products);
+        return product
+    } catch (error) {
+        
+    }
+
 }

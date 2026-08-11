@@ -23,3 +23,17 @@ if(this.addtocartItems.rowCount<1){
     return true
 }
 }
+exports.getCartItems=async(cart_id)=>{
+    try {
+        const items=await pool.query(`select product_id , quantity from cart_items where cart_id = $1`,[cart_id]);
+        if(items.rowCount<1){
+            const error = new Error("No products in cart ");
+            error.status=404;
+            throw error
+        }else{
+            return items.rows
+        }
+    } catch (error) {
+        throw error
+    }
+}
