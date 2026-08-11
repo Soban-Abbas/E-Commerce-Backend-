@@ -28,3 +28,34 @@ exports.getProductByproductId_userId=async(user_id,product_id)=>{
         throw error
     }
 }
+exports.getFavouriteProducts=async(limit , offset , user_id)=>{
+    try {
+        const favproducts = await pool.query(`select wishlists.product_id , products.name , products.description, products.price,products.sku,products.image_url,categories.name as category, inventory.quantity  from wishlists
+            inner join products
+            on wishlists.product_id=products.id
+            inner join product_categories
+            on products.id=product_categories.product_id
+            inner join categories
+            on categories.id = product_categories.category_id
+            inner join inventory
+            on products.id=inventory.product_id
+
+            where wishlists.user_id = $1
+            
+            limit $2 offset $3
+            `,[user_id,limit,offset]);
+
+
+
+            if(favproducts.rowCount>0){
+                return favproducts.rows
+            }
+            else{
+                const error = new Error ("No Product in Favourite");
+                error.status=404;
+                throw error
+            }
+    } catch (error) {
+        throw error
+    }
+}

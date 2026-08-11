@@ -13,3 +13,13 @@ exports.addToWishlist=async(user_id,sku)=>{
         throw error
     }
 }
+
+exports.getFavouriteProducts=async(page , limit , user_id)=>{
+    try {
+        const offset= Number((page-1)*limit)
+        const favouriteProducts=await wishlistModel.getFavouriteProducts(limit,offset,user_id);
+        return favouriteProducts
+    } catch (error) {
+        throw error
+    }
+}

@@ -96,7 +96,15 @@ return
 
 exports.getProductBySku=async(sku)=>{
     try {
-        const product=await pool.query("select * from products where sku=$1",[sku]);
+        const product=await pool.query(`select products.*,inventory.quantity,categories.name as category from products
+            inner join inventory
+            on products.id=inventory.product_id
+            inner join product_categories
+            on products.id=product_categories.product_id
+             inner join categories
+            on categories.id = product_categories.category_id
+
+             where products.sku=$1`,[sku]);
         if(product.rowCount<1){
             const error=new Error("product not Available");
             error.status=404;
