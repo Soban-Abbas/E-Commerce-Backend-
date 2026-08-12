@@ -17,7 +17,8 @@ const alterCategories = require("../migration/015_alter_categories");
 const setUniqueName = require("../migration/016_alter_categories")
 const setUniqueProductName=require("../migration/017_unique_product_name");
 const drop_parent_category_id=require("../migration/018_delete_parent_category");
-const drop_price_from_cart_items=require("../migration/019_dropPriceFromcartItems")
+const drop_price_from_cart_items=require("../migration/019_dropPriceFromcartItems");
+const alter_order_status=require("../migration/020_alter_type_order_status")
 async function createMigration(pool) {
     try {
         
@@ -109,6 +110,10 @@ const migrations = [{
     {
         name: "0019_drop_price_from_cart_items",
         migration: drop_price_from_cart_items
+    },
+    {
+        name: "0020_alter_type_order_status_all_new_values",
+        migration:alter_order_status
     }
 ]
 
