@@ -1,5 +1,6 @@
 const productService=require("../services/productservice")
-const authService=require("../services/authService")
+const authService=require("../services/authService");
+
 exports.getProducts=async(req ,res ,next)=>{
     try {
         const page=req.query?.page??1;

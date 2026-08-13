@@ -14,4 +14,5 @@ router.post('/wishlist',verifyToken,isCustomer,wishlistController.addIntoWishlis
 router.get('/wishlist',verifyToken,isCustomer,wishlistController.getFavouriteProducts)
 router.post('/cart',jsonParser,verifyToken,isCustomer,cartController.addProductTocart)
 router.get('/cart',verifyToken,isCustomer,cartController.getCartItems)
+
 module.exports=router;
