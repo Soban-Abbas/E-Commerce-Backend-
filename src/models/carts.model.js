@@ -1,4 +1,3 @@
-const { user } = require("../config/db.config")
 const {pool}=require("../config/pool")
 exports.getUserCartId=async(user_id)=>{
     try {
@@ -33,6 +32,26 @@ exports.getCartItems=async(cart_id)=>{
         }else{
             return items.rows
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.clearCart=async(cart_id,products,client)=>{
+    try {
+const allProductDeleted=[]
+        for(let i=0;i<products.length ; i++){
+            const deleteFromcartItems = await client.query(`delete from cart_items where cart_id = $1 and  product_id = $2 returning *`, [cart_id, products[i].id]);
+
+            allProductDeleted.push(deleteFromcartItems)
+        }
+
+        if(products.length===allProductDeleted.length){
+            return true
+        }else{
+            throw new Error();
+        }
+      
     } catch (error) {
         throw error
     }

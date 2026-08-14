@@ -54,3 +54,19 @@ return{
         
     }
 }
+exports.getCouponById=async(id)=>{
+    try {
+        const coupon=await couponModel.getCouponById(id);
+        return coupon
+    } catch (error) {
+        throw error
+    }
+}
+exports.IncreaseCouponUse=async(id,client)=>{
+    try {
+        const increaseCount= await couponModel.increaseCount(id,client);
+        return increaseCount
+    } catch (error) {
+        throw error
+    }
+}

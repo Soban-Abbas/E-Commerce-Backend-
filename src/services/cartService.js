@@ -87,3 +87,13 @@ grandTotal:grandTotal
         throw error
     }
 }
+
+exports.clearCart=async(user_id, products,client)=>{
+    try {
+        const getCartById=await cartModel.getUserCartId(user_id);
+
+        const clearCartItems=await cartModel.clearCart(getCartById,products,client)
+    } catch (error) {
+        throw error
+    }
+}

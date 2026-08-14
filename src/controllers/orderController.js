@@ -1,14 +1,15 @@
 
-const orderService=require("../services/orderService")
+const orderService = require("../services/orderService")
 
 exports.postOrder = async (req, res, next) => {
     try {
         const user_id = req.user.id;
-        const coupon = req.body?.coupon_id ?? null;
+        const coupon = req.body?.couponId ?? null;
         const shippingAdress = req.body?.address ?? null;
         const paymentMethod = req.body?.paymentMethod ?? 'cod';
+        const phoneNumber=req.body.phoneNumber
+        const placeOrder = await orderService.placeOrder(user_id, coupon, shippingAdress, paymentMethod,phoneNumber);
 
-        const placeOrder = await orderService.placeOrder(user_id, coupon_id, shippingAdress, paymentMethod);
         res.status(201).json({
             orderDetails: placeOrder
         })

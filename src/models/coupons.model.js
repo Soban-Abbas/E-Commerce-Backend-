@@ -37,3 +37,30 @@ exports.getCouponByCode=async(code)=>{
         throw error
     }
 }
+exports.getCouponById=async(id)=>{
+    try {
+        const coupon = await pool.query(`select * from coupons where id = $1 and expires_at>now() and used_count<max_uses `,[id]);
+        return coupon.rows
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.increaseCount=async(id,client)=>{
+    try {
+        const increaseCount=await client.query(`
+            UPDATE coupons 
+SET used_count = used_count + 1 
+WHERE id = $1 returning *`,[id]);
+
+if(increaseCount.rowCount>0){
+    return increaseCount.rows[0].used_count
+}else{
+    const error = new Error()
+    throw error
+}
+        
+    } catch (error) {
+        throw error
+    }
+}
