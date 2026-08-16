@@ -1,5 +1,4 @@
-const e = require("express");
-const { password } = require("../config/db.config");
+
 const {pool}=require("../config/pool");
 exports.getUserByEmail=async(email)=>{
     try {
@@ -56,6 +55,20 @@ exports.login=async(email,password)=>{
             error.status=401;
             throw error
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.getUserbyId=async(id)=>{
+    try {
+        const user=await pool.query(`select * from users where id = $1`,[id]);
+        if(user.rowCount<1){
+            const error = new Error("cutomer account deleted");
+            error.status=404;
+            throw error
+        }
+        return user.rows[0]
     } catch (error) {
         throw error
     }

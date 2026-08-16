@@ -50,7 +50,6 @@ if(coupon!==null){
 
 }
 const placeOrder=await orderModel.placeOrder(user_id,couponId,afterDiscount,shippingAdress,phoneNumber,client);
-console.log(placeOrder);
         const addIntoOrderItems = await orderItemsModel.addNewItems(user_id, placeOrder.id,sellingProducts,client)
 
 
@@ -68,6 +67,7 @@ const updateOrderStatus=await orderModel.updateOrderStatus(user_id,'shipped',cli
 const orderStatus=updateOrderStatus
     const {status:Payment_Status,payment_method:paymentMethod}=pay;
     const {  total_amount, shipping_address, phone_number }=placeOrder
+    await client.query('commit')
     return {
         orderStatus,
         total_amount,
@@ -79,28 +79,26 @@ const orderStatus=updateOrderStatus
 
 
 }
+else{
+    await client.query(`commit`)
+    return{
+    redirectUrl:`http://localhost:3010/customer/onlinepayment/${paymentMethod}/${placeOrder.id}`
 
+    }
+}
 
-
-
-await client.query('rollback')
-
-
-
-
-        
-     
-
-
-
-
-
-
-
-    } catch (error) {
+ } catch (error) {
         await client.query(`rollback`)
         throw error
     }finally{
         await client.release()
+    }
+}
+exports.getOrderDetails=async(orderId)=>{
+    try {
+        const order=await orderModel.getOrderDetails(orderId);
+        return order
+    } catch (error) {
+        throw error
     }
 }

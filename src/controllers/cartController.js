@@ -16,6 +16,7 @@ exports.addProductTocart=async(req , res , next)=>{
 }
 exports.getCartItems=async(req ,res , next)=>{
     try {
+    
         const user_id=req.user.id
         const getCartItems=await cartService.getCartItems(user_id);
 res.status(200).json({

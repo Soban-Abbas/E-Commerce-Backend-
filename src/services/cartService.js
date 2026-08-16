@@ -21,6 +21,7 @@ return "Product added to cart"
 }
 exports.getCartItems=async(user_id)=>{
     try {
+        
         const getCartId=await cartModel.getUserCartId(user_id);
         
         const getCartItems=await cartModel.getCartItems(getCartId)
@@ -49,6 +50,7 @@ exports.getCartItems=async(user_id)=>{
             const avaiableQuantity=product.quantity??0;
             const requestedQuantity=item.quantity
 const inStock=avaiableQuantity>=requestedQuantity
+
             return{
             id:product.id,
             name:product.name,

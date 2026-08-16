@@ -3,6 +3,7 @@ const orderService = require("../services/orderService")
 
 exports.postOrder = async (req, res, next) => {
     try {
+    
         const user_id = req.user.id;
         const coupon = req.body?.couponId ?? null;
         const shippingAdress = req.body?.address ?? null;
