@@ -25,3 +25,13 @@ try {
     throw error
 }
 }
+
+
+exports.updateProductsQuantity=async(products , client)=>{
+    try {
+        const updateproductQuantity=await inventroyModel.updateProductsQuantity(products,client);
+        return true
+    } catch (error) {
+        throw error
+    }
+}

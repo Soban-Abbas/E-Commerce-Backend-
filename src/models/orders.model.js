@@ -30,7 +30,7 @@ exports.updateOrderStatus=async(user_id,status,client)=>{
 
 exports.getOrderDetails=async(orderid)=>{
     try {
-        const order= await pool.query('select * from orders');
+        const order= await pool.query('select * from orders where id = $1',[orderid]);
 
         if(order.rowCount<1){
             const error =  new Error("Order Not Exist");

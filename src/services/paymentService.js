@@ -1,5 +1,6 @@
 const { pool } = require("../config/pool");
 const paymentModel = require("../models/payment.model");
+const inventoryService=require("./inventoryService")
 const { generateTransactionId } = require("../util/generateTransactionId");
 const orderService = require("../services/orderService");
 const cartService = require("../services/cartService");
@@ -38,7 +39,13 @@ exports.payOnline = async (userId, orderId, paymentMethod) => {
 
         const pay = await paymentModel.pay(orderId, getOrderDetails.total_amount, payment_status, paymentMethod, TransactionId, client);
 
+    
         const cartItems = await cartService.getCartItems(userId)
+
+
+
+        
+
 
         const sellingProducts = cartItems.filter(item => {
             if (item.inStock) {
@@ -48,22 +55,36 @@ exports.payOnline = async (userId, orderId, paymentMethod) => {
             }
         })
 
-        console.log("hello")
+        const sellingInfo = sellingProducts.map(p => {
+            return {
+                id: p.id,
+                name: p.name,
+quantity:p.quantity
+            }
+        })
+
+
         const clearCart = await cartService.clearCart(userId, sellingProducts, client)
-
-        const increaseCouponCount = await couponService.IncreaseCouponUse(getOrderDetails.coupon_id, client);
+        console.log("hello")
+        if(getOrderDetails.coupon_id!==null){
+            const increaseCouponCount = await couponService.IncreaseCouponUse(getOrderDetails.coupon_id, client);
+        }
+        
         const orderStatus = 'paid'
-
+        console.log("hello")
         const updateOrderStatus = await orderModel.updateOrderStatus(userId, orderStatus, client);
 
 
 
-        const customer = await customerService.getUserById(userId)
+        const customer = await customerService.getUserById(userId);
+
+        await inventoryService.updateProductsQuantity(sellingInfo,client);
         await client.query('commit');
 
         return {
             name: customer.name,
-            orderStatus: getOrderDetails.status,
+            products:sellingInfo,
+            orderStatus: updateOrderStatus,
             amount: getOrderDetails.total_amount,
             address: getOrderDetails.shipping_address,
             phone_number: getOrderDetails.phone_number,

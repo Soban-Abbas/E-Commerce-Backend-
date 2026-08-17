@@ -35,3 +35,14 @@ exports.deleteQuantity=async(product_id,client)=>{
         throw error
     }
 }
+
+
+exports.updateProductsQuantity=async(products , client)=>{
+    try {
+        for(let i=0;i<products.length ; i++){
+            await client.query(`update inventory set quantity = quantity-$1 where product_id = $2`,[products[i].quantity,products[i].id])
+        }
+    } catch (error) {
+        throw error
+    }
+}

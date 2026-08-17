@@ -1,8 +1,10 @@
 const { pool } = require("../config/pool");
+const customerService=require("./CustomerService")
 const cartService = require("./cartService");
 const paymentService=require("./paymentService");
 const couponService = require("./couponService")
 const orderModel=require("../models/orders.model");
+const inventoryService=require("./inventoryService")
 const orderItemsModel=require("../models/order_items.model");
 exports.placeOrder = async (user_id, couponId, shippingAdress, paymentMethod,phoneNumber) => {
     const client = await pool.connect()
@@ -20,7 +22,20 @@ exports.placeOrder = async (user_id, couponId, shippingAdress, paymentMethod,pho
         })
 
 
-       
+
+    
+
+
+
+
+       const sellingInfo=sellingProducts.map(p=>{
+        return{
+         id:   p.id,
+name:p.name,
+quantity:p.quantity
+
+        }
+       })
 let coupon = null;
 
 
@@ -36,6 +51,7 @@ let coupon = null;
             }
         }
 
+        
 
         const totalBill=cartItems[cartItems.length-1].grandTotal;
 
@@ -46,9 +62,10 @@ if(coupon!==null){
 
     afterDiscount = applyDiscount.AfterDiscount
 
-
-
 }
+
+
+
 const placeOrder=await orderModel.placeOrder(user_id,couponId,afterDiscount,shippingAdress,phoneNumber,client);
         const addIntoOrderItems = await orderItemsModel.addNewItems(user_id, placeOrder.id,sellingProducts,client)
 
@@ -62,13 +79,28 @@ const transactionId=null
     const clearCart=await cartService.clearCart(user_id,sellingProducts,client)
 
 
-    const increaseCouponCount= await couponService.IncreaseCouponUse(couponId,client);
+    
+
+if(coupon!==null){
+    const increaseCouponCount = await couponService.IncreaseCouponUse(couponId, client);
+}
+    
+
+
 const updateOrderStatus=await orderModel.updateOrderStatus(user_id,'shipped',client);
 const orderStatus=updateOrderStatus
     const {status:Payment_Status,payment_method:paymentMethod}=pay;
     const {  total_amount, shipping_address, phone_number }=placeOrder
+    const customer=await customerService.getUserById(user_id);
+
+
+
+    await inventoryService.updateProductsQuantity(sellingInfo,client);
+
     await client.query('commit')
     return {
+name:customer.name,
+       products: sellingInfo,
         orderStatus,
         total_amount,
         shipping_address,
@@ -82,6 +114,8 @@ const orderStatus=updateOrderStatus
 else{
     await client.query(`commit`)
     return{
+    
+        totalAmountCharge:placeOrder.total_amount,
     redirectUrl:`http://localhost:3010/customer/onlinepayment/${paymentMethod}/${placeOrder.id}`
 
     }
