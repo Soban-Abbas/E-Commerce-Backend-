@@ -1,7 +1,10 @@
 const {pool}=require("../config/pool")
 exports.addCoupon=async(c)=>{
     try {
-        const coupon=await pool.query(`insert into coupons (code , discount_type , discount_value , min_order_amount , max_uses, expires_at,is_active) values ($1,$2,$3,$4,$5,$6,$7)`,[c.code , c.discountType, c.discountValue,c.minOrderAmount,c.maxUses,c.expiresAt,c.isActive]);
+
+
+        console.log(c);
+        const coupon=await pool.query(`insert into coupons (code , discount_type , discount_value , min_order_amount , max_uses, expires_at,is_active) values ($1,$2,$3,$4,$5,$6,$7) returning *`,[c.code , c.discountType, c.discountValue,c.minOrderAmount,c.maxUses,c.expiresAt,c.isActive]);
         if(coupon.rowCount>0){
             return true
         }

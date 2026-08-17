@@ -24,7 +24,7 @@ exports.resetPassword = async (token, password) => {
     try {
         const validateToken = await tokenModel.verifyToken(token);
 
-        const encryptedpassword = await encryptedPassword(password)
+        const encryptedpassword = await encryptPassword(password)
         console.log("hello")
         const resetPassword = await userModel.resetpassword(validateToken[0].user_id, encryptedpassword);
         return "Password changed Successfully";

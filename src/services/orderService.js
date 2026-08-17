@@ -6,6 +6,7 @@ const couponService = require("./couponService")
 const orderModel=require("../models/orders.model");
 const inventoryService=require("./inventoryService")
 const orderItemsModel=require("../models/order_items.model");
+
 exports.placeOrder = async (user_id, couponId, shippingAdress, paymentMethod,phoneNumber) => {
     const client = await pool.connect()
 
@@ -132,6 +133,17 @@ exports.getOrderDetails=async(orderId)=>{
     try {
         const order=await orderModel.getOrderDetails(orderId);
         return order
+    } catch (error) {
+        throw error
+    }
+}
+
+
+
+exports.isCustomerOrdered=async(userId, productId)=>{
+    try {
+        const isCustomerordered=await orderModel.isCustomerOrdered(userId,productId);
+        return isCustomerordered
     } catch (error) {
         throw error
     }

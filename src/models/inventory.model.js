@@ -11,7 +11,7 @@ exports.addQuantityIntoInventory=async(product_id, quantity , client)=>{
 }
 exports.updateQuantity=async(quantity , id )=>{
 try {
-    const updateQuantity=await pool.query(`update inventory set quantity = $1 where product_id = $2 returning *`,[quantity,id]);
+    const updateQuantity=await pool.query(`update inventory set quantity = quantity+ $1 where product_id = $2 returning *`,[quantity,id]);
     if(updateQuantity.rowCount<1){
         throw new Error("failed to update Quantity");
         return 

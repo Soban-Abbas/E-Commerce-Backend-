@@ -1,3 +1,4 @@
+const { user } = require('../config/db.config');
 const {pool}=require('../config/pool');
 exports.placeOrder = async (user_id, couponId, afterDiscount, shippingAdress, phoneNumber,client)=>{
     try {
@@ -38,6 +39,26 @@ exports.getOrderDetails=async(orderid)=>{
             throw error
         }
         return order.rows[0]
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.isCustomerOrdered=async(user_id , product_id)=>{
+    try {
+        const customerOrdered=await pool.query( `select orders.id from orders
+            inner join order_items 
+            on orders.id= order_items.order_id
+            where order_items.product_id = $1 and orders.user_id = $2`,[product_id,user_id]);
+
+
+            if(customerOrdered.rowCount>0){
+                return true
+            }else{
+                const error = new Error("cannot post review as u have not orderd that product");
+                error.status=404;
+                throw error
+            }
     } catch (error) {
         throw error
     }

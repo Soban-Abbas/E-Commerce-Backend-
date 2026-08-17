@@ -15,6 +15,8 @@ res.status(200).json({
 }
 exports.resetPassword=async (req ,res , next) => {
     try {
+
+        console.log("helo")
         const token = req.params.token;
         const password = req.body.password;
         const result = await authService.resetPassword(token,password);
